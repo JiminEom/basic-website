@@ -1,0 +1,75 @@
+/* 페이지 전체 */
+.mypage {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 0 16px;
+  font-family: Arial, sans-serif;
+}
+
+/* 페이지 제목 */
+.mypage-title {
+  text-align: center;
+  color: #1e3a8a;   /* 남색 계열 */
+  font-weight: bold; /* 두껍게 */
+}
+
+/* 카드 */
+.mypage-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 카드 제목 */
+.mypage-card-title {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+  color: #333;
+}
+
+/* 정보 행 */
+.mypage-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* 라벨 */
+.mypage-label {
+  font-weight: bold;
+  color: #555;
+}
+
+/* 폼 그룹 */
+.mypage-form-group {
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 입력창 */
+.mypage-input {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+}
+
+/* 버튼 */
+.mypage-button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  background-color: #1e3a8a;
+  color: #fff;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.mypage-button:hover {
+  background-color: #1e40af;
+}
