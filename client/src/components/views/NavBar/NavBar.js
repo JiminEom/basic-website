@@ -7,6 +7,7 @@ import {logoutUser} from '../../../_actions/user_action'
 function NavBar() {
   const user = useSelector((state) => state.user);
   const isAuth = !!user?.isAuth;
+  const role = user?.useData?.role ||'user';
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,13 +32,15 @@ function NavBar() {
     <div
       style={{
         display: 'flex',
-        justifyContent: 'flex-end', // 오른쪽 정렬
+        justifyContent: 'space-between',
         alignItems: 'center',
         backgroundColor: '#1e293b', // 진한 남색
-        padding: '10px 20px',
-        gap: '15px', // 메뉴 간격
+        padding: '10px 20px'
       }}
     >
+      <div style={{ color: '#f8fafc', fontWeight: 'bold', fontSize: '20px' }}>Web Site</div>
+
+       <div style={{ display: 'flex', gap: '15px' }}>
        {/* Landing 메뉴 */}
       <Link
         to="/"
@@ -107,6 +110,28 @@ function NavBar() {
             🐱회원가입
           </Link>
 
+          <Link to="/membership/redeem"
+          style={{
+              color: '#e2e8f0',
+              textDecoration: 'none',
+              padding: '6px 10px',
+              borderRadius: '6px',
+              backgroundColor: '#334155',}}>🧐멤버십</Link>
+          {/* 프리미엄존은 나중에 role 체크 붙이면 됨 */}
+          
+          <Link
+            to="/video"
+            style={{
+              color: '#e2e8f0',
+              textDecoration: 'none',
+              padding: '6px 10px',
+              borderRadius: '6px',
+              backgroundColor: '#334155',
+            }}
+          >
+            🎥영상
+          </Link>
+
           <Link
             to="/me"
             style={{
@@ -141,6 +166,7 @@ function NavBar() {
         </Link>
 
       )}
+      </div>
     </div>
   )
 }

@@ -2,6 +2,7 @@ const path = require('path')
 require('dotenv').config({path:path.join(__dirname,'.env')});
 const axios = require('axios');
 
+
 const express = require('express'); //express모듈 불러옴
 const { mongo } = require('mongoose');
 const app = express(); // function을 통해 express 앱 생성
@@ -15,14 +16,30 @@ const config = require('./config/key');
 const { Post } = require('./models/Post');
 const { Types: { ObjectId } } = require('mongoose');
 
+const commentsRouter = require('./routes/comments');
+
+const mongoose = require('mongoose');
+const e = require('express');
+
 //fileupload
 const multer = require('multer');
 const fs = require('fs');
+
+
+mongoose.connect(process.env.MONGODB_URI,{}).then(() => console.log('MongoDB Connected...'))
+.catch(err => console.log(err)); //mongoose로 에러가 있으면 에러 로그를 띄운다. 
+
+app.use(express.json());
+app.use(express.urlencoded({extended: true})); 
+app.use(bodyParser.json());
+app.use(cookieParser());
 // 업로드 폴더 보장
 const UPLOAD_DIR = path.join(__dirname, 'uploads');
 
 // 정적 제공: 브라우저에서 /uploads/... 로 접근 가능
 app.use('/uploads', express.static(UPLOAD_DIR));
+
+
 
 // multer 스토리지 + 파일명
 // 파일명을 저장할 때, 날짜+파일명
@@ -40,10 +57,6 @@ const storage = multer.diskStorage({
 //multer 인스턴스 생성, 파일 업로드 미들웨어의 "객체 생성"부분
 const upload = multer ({storage});
 //application/x-www-form-urlencoded 이런 형태로 된 데이터를 분석해서 가져올 수 있게 해줌
-app.use(bodyParser.urlencoded({extended: true})); 
-//application/json 이런 형태로 된 데이터를 분석해서 가져올 수 있게 해줌
-app.use(bodyParser.json());
-app.use(cookieParser());
 
 //uploads 하는데에 있어 에러를 일관되게 JSON응답으로 돌려줄 수 있음 
 const safeSingle = (field) => (req, res, next) => {
@@ -56,10 +69,6 @@ const safeSingle = (field) => (req, res, next) => {
   });
 };
 
-const mongoose = require('mongoose');
-const e = require('express');
-mongoose.connect(process.env.MONGODB_URI,{}).then(() => console.log('MongoDB Connected...'))
-.catch(err => console.log(err)); //mongoose로 에러가 있으면 에러 로그를 띄운다. 
 
 
 app.get('/', (req, res) => {res.send('Hello World!');});
@@ -232,12 +241,14 @@ app.post('/api/board/write', auth,safeSingle('file'), async (req, res)=>{
     }
 
     // OK
+    const fileName = req.file? req.file.filename:null;
     const fileUrl = req.file ? `/uploads/${req.file.filename}` : null;
     
-    const post = await Post.create({ title, content, writer:req.user._id, fileUrl, authorName:user.name})
+    const post = await Post.create({ title, content, writer:req.user._id, fileUrl, authorName:user.name, fileName})
 
     return res.status(200).json({success:true, message:"게시글 등록 성공",post});
   }catch(err){
+    console.error('[WRITE ERROR]', err); //
     return res.status(500).json({success:false, message:"서버에러"})
   }
 })
@@ -295,15 +306,19 @@ app.delete('/api/board/:id',auth, ownerOnly, async(req,res)=>{
   }
 })
 
-//download
-app.get('/download/:filename', (req, res) => {
-  const filename = req.params.filename;
-  const fileUrl = path.join(__dirname, 'uploads', filename);
 
-  res.download(fileUrl, filename, (err) => {
+// 다운로드 강제
+app.get('/download/:filename', (req, res) => {
+  const filePath = path.join(UPLOAD_DIR, req.params.filename);
+
+  if (!fs.existsSync(filePath)) {
+    return res.status(404).json({ success: false, message: '파일 없음' });
+  }
+
+  res.download(filePath, req.params.filename, (err) => {
     if (err) {
       console.error('파일 다운로드 오류:', err);
-      res.status(404).send('파일을 찾을 수 없습니다.');
+      res.status(500).send('파일 다운로드 실패');
     }
   });
 });
@@ -338,6 +353,16 @@ app.get('/api/weather',async(req,res)=>{
 //mypage연결
 app.use('/api/users', require('./routes/me'));
 
+//댓글
+app.use('/api/comments', commentsRouter);
+
+//멤버십
+app.use('/api/membership', require('./routes/membersip'))
+
+//동영상
+//uploads 아래 파일을 정적으로 서빙 
+app.use('/api/video', require('./routes/video'));
+// JSON 파싱
 
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);

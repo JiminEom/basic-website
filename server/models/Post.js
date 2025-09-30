@@ -13,7 +13,9 @@ const postSchema = mongoose.Schema({
     writer:{
         type:mongoose.Schema.Types.ObjectId,
         ref:'User'
-    },fileUrl:{type:String, default:null}
+    },
+    fileUrl:{type:String, default:null},
+    fileName :{type: String}
 },{
     timestamps: true
 })

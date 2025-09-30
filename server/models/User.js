@@ -23,7 +23,7 @@ const userSchema = mongoose.Schema({
         maxlength: 50
     },
     role: {
-        // 0: 일반유저, 1: 관리자, 2: 멤버십
+        // 0: 일반유저, 1: 관리자, 2: 멤버십,3: 프리미엄...
         type: Number,
         default: 0
     },

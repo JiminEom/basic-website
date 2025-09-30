@@ -12,5 +12,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # 빌드 산출물
-client/build/
 dist/
+
+# 업로드 파일
+server/uploads/

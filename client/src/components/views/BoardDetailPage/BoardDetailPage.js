@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import CommentForm from '../../CommentForm/CommentForm'
+import CommentList from '../../CommentList/CommentList'
 
 function BoardDetailPage() {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [fileUrl, setFileUrl] = useState('');
   const navigate = useNavigate();
+
+  const [comments, setComments]=useState([]);
 
   useEffect(() => {
     axios.get(`/api/board/${id}`)
@@ -20,6 +24,20 @@ function BoardDetailPage() {
       })
       .catch(err => console.error(err));
   }, [id]);
+
+  //댓글 불러오기
+  const fetchComments = async()=>{
+    try{
+      const res = await axios.get(`/api/comments/${id}`);
+      if (res.data.success) setComments(res.data.comments);
+    }catch(err){ console.error(err) }
+  };
+
+  useEffect(()=>{
+    if(post){
+      fetchComments()
+    }
+  }, [post]);
 
   if (!post) return <div>로딩중...</div>;
 
@@ -43,7 +61,7 @@ function BoardDetailPage() {
         alert('삭제 실패하였습니다.');
       }
     } catch (err) {
-      console.error(err);
+      //console.error(err);
       alert('삭제 중 오류가 발생하였습니다.');
     }
   };
@@ -98,7 +116,7 @@ function BoardDetailPage() {
         <div style={{ marginBottom: 20 }}>
           <div style={{ fontWeight: 600, marginBottom: 6 }}>첨부파일</div>
           <a
-            href={absUrl}//항상 절대경로를 사용 
+            href={`${HOST}${post.fileUrl}`}//항상 절대경로를 사용 
             target="_blank"//새탭으로 열기 
             rel="noreferrer" // 새탭 열기의 보안 속성. (새탭에서 어떤 페이지에서 왔는지 서버 로그에 남지 않음)
             style={{ marginRight: 12, color: '#002169ff' }}
@@ -106,7 +124,7 @@ function BoardDetailPage() {
             새 탭에서 열기
           </a>
           <a
-            href={fileUrl} //항상 절대경로를 사용
+            href={`${HOST}/download/${encodeURIComponent(post.fileName)}`} //항상 절대경로를 사용
             download
             style={{ color: '#002169ff' }}
           >
@@ -115,13 +133,24 @@ function BoardDetailPage() {
         </div>
       )}
 
+      {/*댓글영역*/}
+      <div style={{ marginTop:24}}>
+        <h3 style={{ marginBottom:12 }}>댓글</h3>
+        {/*댓글 작성폼 */}
+        <CommentForm postId={id} onPosted={fetchComments}/>
+        {/*댓글목록*/}
+        <div style = {{ marginTop:12 }}>
+          <CommentList comments = {comments}/>
+        </div>
+      </div>
+
       {/* 버튼 영역 */}
       <div style={{ display: 'flex', gap: 10 }}>
         <Link to={`/board/edit/${post._id}`} style={{ textDecoration: 'none' }}>
           <button
             style={{
               padding: '8px 16px',
-              background: '#2563eb',
+              background: '#374151',
               color: '#fff',
               border: 'none',
               borderRadius: 6,
@@ -136,7 +165,7 @@ function BoardDetailPage() {
           onClick={onDelete}
           style={{
             padding: '8px 16px',
-            background: '#ef4444',
+            background: '#6B7280',
             color: '#fff',
             border: 'none',
             borderRadius: 6,

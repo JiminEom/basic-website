@@ -30,6 +30,8 @@ function LoginPage(props) {
       if(response.payload.loginSuccess){
         //props.histroy.push('/')
         navigate('/')
+      }else{
+        alert(response.payload.message||"로그인에 실패했습니다.")
       }
     }).catch(error=> {
       console.error('로그인 중 오류 발생: ', error);

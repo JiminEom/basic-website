@@ -7,8 +7,8 @@ const User = require('../models/User');
 // 1) 내 정보 조회 (이메일/이름)
 //auth를 먼저 실행하여 토큰 검증. 실패시 여기까지 못 들어옴
 router.get('/me', auth, async (req, res) => {
-  const { email, name, _id } = req.user; // auth 미들웨어가 req.user 셋팅
-  return res.json({ success: true, me: { _id, email, name } });
+  const { email, name, _id,role } = req.user; // auth 미들웨어가 req.user 셋팅
+  return res.json({ success: true, me: { _id, email, name,role } });
 });
 
 // 2) 비밀번호 변경

@@ -22,7 +22,9 @@ function BoardWritePage() {
     if(file) fd.append('file',file)
 
     try {
-      const res = await axios.post('/api/board/write', fd);
+      const res = await axios.post('/api/board/write', fd,{
+        headers:{'Content-Type':'multipart/form-data'}
+      });
       if (res.data.success) {
         alert('게시글 등록 성공');
         navigate('/board'); // 등록 후 목록으로 이동

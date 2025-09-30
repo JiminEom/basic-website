@@ -12,19 +12,10 @@ import BoardDetailPage from './components/views/BoardDetailPage/BoardDetailPage'
 import BoardEditPage from './components/views/BoardEditPage/BoardEditPage'
 import MyPage from './components/views/MyPage/MyPage'
 
-// function App() {
-//   return (
-//     <Router>
-//       <div>
-//         <Routes>
-//           <Route exact path="/" element ={auth(LandingPage,null)}/>
-//           <Route exact path="/login" element={auth(LoginPage, false)}/>
-//           <Route exactpath="/register" element={auth(RegisterPage, false)}/>
-//         </Routes>
-//       </div>
-//   </Router>
-//   );
-// }
+import MembershipRedeemPage from './components/views/membersip/MembershipRedeemPage';
+
+import VideoListPage from './components/views/video/VideoListPage';
+import VideoWatchPage from './components/views/video/VideoWatchPage';
 
 function App() {
   const AuthLandingPage = auth(LandingPage, null);
@@ -36,6 +27,10 @@ function App() {
   const AuthBoardEditPage = auth(BoardEditPage, true);
   const AuthMyPage = auth(MyPage,true);
 
+  const AuthMembershipRedeemPage = auth(MembershipRedeemPage,true)
+
+  const AuthVideoListPage = auth(VideoListPage, true)
+  const AuthVideoWatchPage = auth(VideoWatchPage,true)
 
 
   return (
@@ -51,7 +46,9 @@ function App() {
           <Route path="/board/:id" element={<AuthBoardDetailPage />} />
           <Route path="/board/edit/:id" element={<AuthBoardEditPage />} />
           <Route path="/me" element={<AuthMyPage />} />
-
+          <Route path="/membership/redeem" element={<AuthMembershipRedeemPage />} />
+          <Route path="/video" element={<AuthVideoListPage/>}/>
+          <Route path="/videos/:name" element={<AuthVideoWatchPage/>}/>
 
           
         </Routes>

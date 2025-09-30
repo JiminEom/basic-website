@@ -15,7 +15,8 @@ export default function MyPage() {
   const roleMap ={
     0:'일반 사용자',
     1:'관리자',
-    2:'멤버십 사용자'
+    2:'멤버십 사용자',
+    3:'프리미엄 사용자'
   }
 
   // 혹시 userData가 비어있을 때 대비해서 한 번 더 불러오기
